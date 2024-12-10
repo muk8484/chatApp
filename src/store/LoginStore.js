@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { loginService, logoutService } from '../service/LoginService';
+import { loginService, logoutService, emailAuthRequestService } from '../service/LoginService';
 
 const isLoginAtom = atom(false);
 const userAtom = atom(null);
@@ -54,4 +54,23 @@ const logoutAtom = atom(
     }
   );
 
-export { isLoginAtom, userAtom, loginAtom, logoutAtom };
+const emailAuthRequestAtom = atom(
+  null,
+  async (get, set, email) => {
+    try {
+      const response = await emailAuthRequestService.requestEmailAuth(email);
+      if (response.ok) {
+        console.log('[loginStore] email auth request success ' , response);
+        return response;
+      } else {
+        console.log('[loginStore] email auth request failed');
+        throw new Error(response.error || '이메일 인증 요청에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('[loginStore] email auth request error:', error.message);
+      throw error;
+    }
+  }
+);
+
+export { isLoginAtom, userAtom, loginAtom, logoutAtom, emailAuthRequestAtom };

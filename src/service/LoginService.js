@@ -45,4 +45,30 @@ const logoutService = {
     }
   };
 
-export { loginService, logoutService };
+  const emailAuthRequestService = {
+    requestEmailAuth: async (email) => {
+      return new Promise((resolve, reject) => {
+        try {
+          if (!socket.connected) {
+            console.log('[emailAuthRequestService] disconnected');
+            socket.connect();
+          }
+          socket.emit('requestEmailAuth', email, (response) => {
+            console.log('[emailAuthRequestService] email_auth_request_response', response);
+            if (response?.ok) {
+              console.log('[emailAuthRequestService] auth email sent');
+              resolve(response);
+            } else {
+              reject(new Error(response?.error || '인증 메일 전송에 실패했습니다.'));
+            }
+          });
+        } catch (error) {
+          console.error('[emailAuthRequestService] Socket error:', error);
+          reject(new Error('서버 연결에 실패했습니다.'));
+        }
+      });
+    }
+  };
+  
+
+export { loginService, logoutService, emailAuthRequestService };

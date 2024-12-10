@@ -8,7 +8,7 @@ const Header = () => (
     </>
   );
   
-  const Form = ({ email, setEmail, handleLogin }) => (
+  const Form = ({ email, setEmail, handleLogin, code, setCode }) => (
     <>
       <TextInput
         style={styles.input}
@@ -18,22 +18,30 @@ const Header = () => (
         value={email}
         onChangeText={setEmail}
       />
+      <TextInput
+        style={styles.input}
+        placeholder="이메일 인증 코드"
+        placeholderTextColor="#999"
+        keyboardType="number-pad"
+        value={code}
+        onChangeText={setCode}
+      />
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>로그인</Text>
       </TouchableOpacity>
     </>
   );
   
-  const Footer = () => (
+  const Footer = ({ handleEmailAuthRequest }) => (
     <View style={styles.footer}>
-      <Text style={styles.footerText}>계정이 없으신가요?</Text>
-      <TouchableOpacity>
-        <Text style={styles.footerLink}>회원가입</Text>
+      <Text style={styles.footerText}>이메일 인증이 필요합니다.</Text>
+      <TouchableOpacity onPress={handleEmailAuthRequest}>
+        <Text style={styles.footerLink}>이메일 인증</Text>
       </TouchableOpacity>
     </View>
   );
   
-  const LoginContainer = ({ email, setEmail, handleLogin }) => {
+  const LoginContainer = ({ email, setEmail, handleLogin, code, setCode, handleEmailAuthRequest }) => {
     return (
       <View style={styles.container}>
         <Header />
@@ -41,8 +49,12 @@ const Header = () => (
           email={email}
           setEmail={setEmail}
           handleLogin={handleLogin}
+          code={code}
+          setCode={setCode}
         />
-        <Footer />
+        <Footer 
+          handleEmailAuthRequest={handleEmailAuthRequest}
+        />
       </View>
     );
   };
