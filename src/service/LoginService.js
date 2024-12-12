@@ -1,14 +1,15 @@
 import socket from '../utils/server';
 
 const loginService = {
-  async login(email){
+  async login(email, authCode){
     return new Promise((resolve, reject) => {
       try {
+        console.log('[loginService] login email: ', email, authCode);
         if (!socket.connected) {
             console.log('[loginService] disconnected');
             socket.connect();
         }
-        socket.emit('login', email, (response) => {
+        socket.emit('login', email, authCode, (response) => {
           console.log('[loginService] login_response', response);
           if (response?.ok) {
             console.log('[loginService] login_response ok');

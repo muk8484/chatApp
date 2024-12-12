@@ -8,16 +8,16 @@ const socket = io(SOCKET_URL, {
     forceNew: true
 });
 
-// socket.on('connect', () => {
-//     console.log('Connected to server');
-// });
+socket.on('connect', () => {
+    console.log('Connected to server');
+});
 
-// socket.on('connect_error', (err) => {
-//     console.log('Connection error details:', err);
-// });   
+socket.on('connect_error', (err) => {
+    console.log('Connection error details:', err);
+});   
 
-// socket.on('disconnect', (reason) => {
-//     console.log('Disconnected:', reason);
-// });
+socket.on('disconnect', (reason) => {
+    console.log('Disconnected:', reason);
+});
 
 export default socket;

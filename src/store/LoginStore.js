@@ -6,9 +6,10 @@ const userAtom = atom(null);
 
 const loginAtom = atom(
   null,
-  async (get, set, email) => {
+  async (get, set, email, authCode) => {
     try {
-      const response = await loginService.login(email);
+      console.log('[loginStore] loginAtom email: ', email, authCode);
+      const response = await loginService.login(email, authCode);
       // 로그인 성공 시 상태 업데이트
       if (response.ok) {
         console.log('[loginStore] login success');
@@ -29,7 +30,7 @@ const loginAtom = atom(
       }
       return response;
     } catch (error) {
-      console.error('로그인 오류:', error.message);
+      console.error('[loginStore] 로그인 오류: ', error.message);
       throw error;
     }
   }

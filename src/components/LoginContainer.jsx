@@ -8,7 +8,7 @@ const Header = () => (
     </>
   );
   
-  const Form = ({ email, setEmail, handleLogin, code, setCode }) => (
+  const Form = ({ email, setEmail, handleLogin, authCode, setAuthCode }) => (
     <>
       <TextInput
         style={styles.input}
@@ -23,8 +23,8 @@ const Header = () => (
         placeholder="이메일 인증 코드"
         placeholderTextColor="#999"
         keyboardType="number-pad"
-        value={code}
-        onChangeText={setCode}
+        value={authCode}
+        onChangeText={setAuthCode}
       />
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>로그인</Text>
@@ -41,7 +41,7 @@ const Header = () => (
     </View>
   );
   
-  const LoginContainer = ({ email, setEmail, handleLogin, code, setCode, handleEmailAuthRequest }) => {
+  const LoginContainer = ({ email, setEmail, handleLogin, authCode, setAuthCode, handleEmailAuthRequest }) => {
     return (
       <View style={styles.container}>
         <Header />
@@ -49,8 +49,8 @@ const Header = () => (
           email={email}
           setEmail={setEmail}
           handleLogin={handleLogin}
-          code={code}
-          setCode={setCode}
+          authCode={authCode}
+          setAuthCode={setAuthCode}
         />
         <Footer 
           handleEmailAuthRequest={handleEmailAuthRequest}

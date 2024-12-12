@@ -6,7 +6,7 @@ import LoginContainer from '../components/LoginContainer';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
-  const [code, setCode] = useState('');
+  const [authCode, setAuthCode] = useState('');
   const [, loginAction] = useAtom(loginAtom);
   const [, emailAuthRequestAction] = useAtom(emailAuthRequestAtom);
 
@@ -15,9 +15,9 @@ const LoginPage = () => {
     return emailRegex.test(email);
   };
 
-  const validateCode = (code) => {
+  const validateCode = (authCode) => {
     const codeRegex = /^[0-9]{6}$/;
-    return codeRegex.test(code);
+    return codeRegex.test(authCode);
   };
 
   const handleLogin = async () => {
@@ -27,27 +27,28 @@ const LoginPage = () => {
         return;
       }
 
-      // if (!code.trim()) {
-      //   Alert.alert('알림', '이메일 인증 코드를 입력해주세요.');
-      //   return;
-      // }
+      if (!authCode.trim()) {
+        Alert.alert('알림', '이메일 인증 코드를 입력해주세요.');
+        return;
+      }
 
-      // if (!validateCode(code)) {
-      //   Alert.alert('알림', '올바른 이메일 인증 코드가 아닙니다.');
-      //   return;
-      // }
+      if (!validateCode(authCode)) {
+        Alert.alert('알림', '올바른 이메일 인증 코드가 아닙니다.');
+        return;
+      }
 
-      // if (!validateEmail(email)) {
-      //   Alert.alert('알림', '올바른 이메일 형식이 아닙니다.');
-      //   return;
-      // }
+      if (!validateEmail(email)) {
+        Alert.alert('알림', '올바른 이메일 형식이 아닙니다.');
+        return;
+      }
 
       // store의 login 액션 호출
-      await loginAction(email);
+      await loginAction(email, authCode);
       
     } catch (error) {
       console.log('error', error.message);
-      Alert.alert('오류','로그인에 실패했습니다.');
+      // Alert.alert('오류','로그인에 실패했습니다.');
+      Alert.alert('오류',error.message);
     }
   };
 
@@ -72,8 +73,8 @@ const LoginPage = () => {
       email={email}
       setEmail={setEmail}
       handleLogin={handleLogin}
-      code={code}
-      setCode={setCode}
+      authCode={authCode}
+      setAuthCode={setAuthCode}
       handleEmailAuthRequest={handleEmailAuthRequest}
     />
   );
