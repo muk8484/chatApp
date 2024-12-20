@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { MessageListenerService, MessageService } from '../service/ChatService';
+import { MessageListenerService, MessageService, emoji_MessageService, EmojiMessageListenerService } from '../service/ChatService';
 
 const messageListAtom = atom([]);
 
@@ -24,6 +24,16 @@ const messageListenerAtom = atom(
   }
 );
 
+const emojiMessageListenerAtom = atom(
+  null,
+  (get, set) => {
+    return EmojiMessageListenerService.getMessage((message) => {
+      console.log('[ChatStore] emojiMessageListenerAtom message received:', message);
+      set(addMessageAtom, message);
+    });
+  }
+);
+
 const sendMessageAtom = atom(
   null,
   async (get, set, message) => {
@@ -36,4 +46,16 @@ const sendMessageAtom = atom(
   }
 );
 
-export { messageListAtom, addMessageAtom, messageListenerAtom, sendMessageAtom };
+const sendEmojiMessageAtom = atom(
+  null,
+  async (get, set, message, user) => {
+    try {
+      await emoji_MessageService.sendMessage(message, user);
+    } catch (error) {
+      console.error('[ChatStore] sendEmojiMessage error:', error);
+      throw error;
+    }
+  }
+);
+
+export { messageListAtom, addMessageAtom, messageListenerAtom, sendMessageAtom, sendEmojiMessageAtom, emojiMessageListenerAtom };

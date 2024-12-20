@@ -12,35 +12,40 @@ import MessageContainer from '../components/MessageContainer';
 import InputField from '../components/InputField';
 import { useAtomValue, useSetAtom, useAtom } from 'jotai';
 import { userAtom } from '../store/LoginStore';
-import { messageListAtom, messageListenerAtom, sendMessageAtom } from '../store/ChatStore';
-import socket from '../utils/server';
+import { messageListAtom, messageListenerAtom, sendMessageAtom, sendEmojiMessageAtom, emojiMessageListenerAtom } from '../store/ChatStore';
 
 function ChatPage() {
   const isDarkMode = useColorScheme() === 'dark';
   const [message, setMessage] = useState('');
   const messageList = useAtomValue(messageListAtom);
   const [, initMessageListener] = useAtom(messageListenerAtom);
+  const [, initEmojiMessageListener] = useAtom(emojiMessageListenerAtom);
   const [, sendMessage] = useAtom(sendMessageAtom);
+  const [, sendEmojiMessage] = useAtom(sendEmojiMessageAtom);
   const user = useAtomValue(userAtom);
 
   useEffect(() => {
     const unsubscribe = initMessageListener();
-
+    const emojiUnsubscribe = initEmojiMessageListener();
     return () => {
       if (unsubscribe) {
         unsubscribe();
       }
+      if (emojiUnsubscribe) {
+        emojiUnsubscribe();
+      }
     };
-  }, [initMessageListener]);
+  }, [initMessageListener, initEmojiMessageListener]);
 
   useEffect(() => {
-    console.log('[ChatPage] messageList: ', messageList);
+    // console.log('[ChatPage] messageList: ', messageList);
   }, [messageList]);
 
   const sendMessageAction = async () => {
     if (!message.trim()) return;
     try {
       await sendMessage(message);
+      await sendEmojiMessage(message, user);
       setMessage('');
     } catch (error) {
       console.error('[ChatPage] sendMessage error:', error);
