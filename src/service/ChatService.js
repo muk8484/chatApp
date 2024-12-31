@@ -40,9 +40,9 @@ const EmojiMessageListenerService = {
 };
 
 const MessageService = {
-    sendMessage(message) {
+    sendMessage(message, messageId) {
         return new Promise((resolve, reject) => {
-            socket.emit('sendMessage', message, (response) => {
+            socket.emit('sendMessage', message, messageId,(response) => {
                 if (response.ok) {
                     resolve();
                 } else {
@@ -54,9 +54,9 @@ const MessageService = {
 };
 
 const emoji_MessageService = {
-    sendMessage(message, user) {
+    sendMessage(message, user, messageId) {
         return new Promise((resolve, reject) => {
-            emojiSocket.emit('sendMessage', message, user, (response) => {
+            emojiSocket.emit('sendMessage', message, user, messageId, (response) => {
                 console.log('[ChatService] emoji_message received:', response);
                 if (response.ok) {
                     resolve();

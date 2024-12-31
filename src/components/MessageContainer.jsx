@@ -31,16 +31,17 @@ const MessageContainer = ({ messageList, user }) => {
     });
   };
 
-  // 메시지 리스트가 업데이트될 때마다 스크롤을 맨 아래로 이동
   useEffect(() => {
     const lastMessage = messageList[messageList.length - 1];
-    if (lastMessage && isOnlyEmoji(lastMessage.chat)) {
+    // if (lastMessage && isOnlyEmoji(lastMessage.chat)) {
+    if (lastMessage) {
       setLoadingEmojiId(lastMessage._id);
       setTimeout(() => {
         setLoadingEmojiId(null);
       }, 1000);
     }
-
+    
+    // 메시지 리스트가 업데이트될 때마다 스크롤을 맨 아래로 이동
     if (flatListRef.current && messageList.length > 0) {
       setTimeout(() => {
         flatListRef.current.scrollToEnd({ animated: true });
@@ -56,15 +57,21 @@ const MessageContainer = ({ messageList, user }) => {
 
     if (isOnlyEmoji(item.chat)) {
       const isLoading = loadingEmojiId === item._id;
+      const isLoading_ = item.type === 'loading';
       return (
         <View style={[
           styles.emojiContainer,
-          isMyMessage(item.user) ? { alignSelf: 'flex-end' } : { alignSelf: 'flex-start' }
+          {alignSelf: isMyMessage(item.user) ? 'flex-end' : 'flex-start'}
         ]}>
-          {isLoading ? (
-            <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />
+          {isLoading_ ? (
+            <View style={styles.emojiContainer}>
+              <ActivityIndicator size="small" color="#0000ff" style={styles.loader} />
+            </View>
           ) : (
-            <Text style={styles.emojiText}>{item.chat}</Text>
+            <Text style={[styles.emojiText, 
+            {textAlign: isMyMessage(item.user) ? 'left' : 'center'}
+            ]}>
+            {item.chat}</Text>
           )}
         </View>
       );
@@ -194,6 +201,16 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     paddingHorizontal: 10,
+  },
+  emojiContainer: {
+    maxWidth: '70%',
+    marginVertical: 5,
+    padding: 10,
+    borderRadius: 15,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
+    // backgroundColor: 'red',
   },
   emojiMessage: {
     alignSelf: 'center',

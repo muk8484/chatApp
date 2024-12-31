@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import 'react-native-get-random-values';
+import { v7 as uuidv7 } from 'uuid';
 import {
   SafeAreaView,
   StyleSheet,
@@ -43,9 +45,12 @@ function ChatPage() {
 
   const sendMessageAction = async () => {
     if (!message.trim()) return;
+    const messageId = uuidv7();
     try {
-      await sendMessage(message);
-      await sendEmojiMessage(message, user);
+      console.log('[ChatPage] user : ', user);
+      console.log('[ChatPage] messageId : ' + messageId);
+      await sendMessage(message, messageId);
+      await sendEmojiMessage(message, user, messageId);
       setMessage('');
     } catch (error) {
       console.error('[ChatPage] sendMessage error:', error);
