@@ -2,6 +2,18 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
+project.ext.vectoricons = [
+    iconFontNames: [ 'MaterialIcons.ttf' ]
+]
+
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+
+project.ext.react = [
+    enableHermes: true,  // Hermes 엔진 사용
+    bundleInRelease: true,  // 릴리즈 빌드에 번들 포함
+    // bundleInDebug: true     // 디버그 빌드에도 번들 포함
+]
+
 /**
  * This is the configuration block to customize your React Native Android app.
  * By default you don't need to apply any configuration, just uncomment the lines you need.
@@ -80,7 +92,7 @@ android {
     namespace "com.chatapp"
     defaultConfig {
         applicationId "com.chatapp"
-        minSdkVersion rootProject.ext.minSdkVersion
+        minSdkVersion 24 //rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"

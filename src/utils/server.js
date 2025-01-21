@@ -1,5 +1,6 @@
 import { io } from "socket.io-client";
 const SOCKET_URL = 'http://192.168.1.131:5001';
+// const SOCKET_URL = 'http://192.168.219.103:5001';
 const socket = io(SOCKET_URL, {
     transports: ['websocket'], // websocket만 사용하도록 강제
     upgrade: false, // polling에서 웹소켓으로 업그레이드하지 않음
@@ -13,6 +14,7 @@ socket.on('connect', () => {
 });
 
 socket.on('connect_error', (err) => {
+    console.log('[Server] SOCKET_URL : ', SOCKET_URL);
     console.log('Connection error details:', err);
 });   
 

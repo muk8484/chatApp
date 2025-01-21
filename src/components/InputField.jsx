@@ -1,7 +1,15 @@
 import React from 'react';
 import { View, TextInput, Button, StyleSheet, Platform } from 'react-native';
+import ImageUploader from './ImageUploader';
 
 const InputField = ({ message, setMessage, sendMessageFunction }) => {
+  const handleImageSent = (imageUrl) => {
+    sendMessageFunction({
+      type: 'image',
+      content: imageUrl,
+      timestamp: new Date().toISOString()
+    });
+  };
   return (
     <View style={styles.inputContainer}>
       {/* <TextInput
@@ -10,6 +18,7 @@ const InputField = ({ message, setMessage, sendMessageFunction }) => {
         onChangeText={setMessage}
         placeholder="메시지를 입력하세요..."
       /> */}
+      <ImageUploader onImageSent={handleImageSent} />
       <TextInput
         style={styles.input}
         value={message}
@@ -23,7 +32,7 @@ const InputField = ({ message, setMessage, sendMessageFunction }) => {
         // returnKeyType="send"
         returnKeyType='default'
         onSubmitEditing={sendMessageFunction}
-        keyboardType={Platform.OS === 'ios' ? 'default' : 'email-address'}
+        keyboardType='default'
         autoComplete="off"
         importantForAutofill="no"
         textContentType="none"

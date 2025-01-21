@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { View, FlatList, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, FlatList, Text, StyleSheet, ActivityIndicator, Image, Dimensions } from 'react-native';
 
 const MessageContainer = ({ messageList, user }) => {
   const flatListRef = useRef(null);
@@ -8,7 +8,11 @@ const MessageContainer = ({ messageList, user }) => {
   const isSystemMessage = (messageUser) => messageUser?.name === "system";
 
   const isOnlyEmoji = (text) => {
-    const emojiRegex = /^[\uD800-\uDBFF\uDC00-\uDFFF\u2600-\u27FF\u2B50\u2B55]+$/;
+    // const emojiRegex = /^[\uD800-\uDBFF\uDC00-\uDFFF\u2600-\u27FF\u2B50\u2B55]+$/;
+    // const emojiRegex = /^(?:[\uD83C-\uDBFF\uDC00-\uDFFF\u2600-\u27FF\u2B50\u2B55]|[\uD83C-\uDBFF\uDC00-\uDFFF\u200D])+$/;
+    const emojiRegex = /^(?:[\uD83C-\uDBFF\uDC00-\uDFFF\u2600-\u27FF\u2B50\u2B55\uFE0F]|[\uD83C-\uDBFF\uDC00-\uDFFF\u200D])+$/;
+    console.log('[MessageContainer] isOnlyEmoji : ', text);
+    console.log('[MessageContainer] isOnlyEmoji : ', emojiRegex.test(text));
     return emojiRegex.test(text);
   };
 
@@ -16,6 +20,8 @@ const MessageContainer = ({ messageList, user }) => {
     if (isSystemMessage(messageUser)) {
       return styles.systemMessage;
     }
+    console.log('[MessageContainer] getMessageStyle text : ', text);
+    console.log('[MessageContainer] getMessageStyle (text) : ', isOnlyEmoji(text));
     if (isOnlyEmoji(text)) {
       return styles.emojiMessage;
     }
@@ -55,8 +61,35 @@ const MessageContainer = ({ messageList, user }) => {
     //console.log('Rendering message:', item); // 디버깅용 로그
     if (!item) return null;
 
+    // 이미지 메시지 처리
+    if (item.type === 'image') {
+      return (
+        <View style={[
+          styles.messageContainer,
+          {alignSelf: isMyMessage(item.user) ? 'flex-end' : 'flex-start'}
+        ]}>
+          {!isMyMessage(item.user) && !isSystemMessage(item.user) && (
+            <Text style={styles.userName}>{item.user?.name}</Text>
+          )}
+          <View style={styles.imageContainer}>
+            <Image 
+              source={{ 
+                uri: `${item.chat}`
+              }}
+              style={styles.imageMessage}
+              resizeMode="contain"
+            />
+          </View>
+          {!isSystemMessage(item.user) && item.createdAt && (
+            <Text style={styles.timeText}>
+              {formatTime(item.createdAt)}
+            </Text>
+          )}
+        </View>
+      );
+    }
+
     if (isOnlyEmoji(item.chat)) {
-      const isLoading = loadingEmojiId === item._id;
       const isLoading_ = item.type === 'loading';
       return (
         <View style={[
@@ -258,6 +291,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontStyle: 'italic',
     textAlign: 'center',
+  },
+  imageContainer: {
+    borderRadius: 10,
+    overflow: 'hidden',
+    backgroundColor: '#f0f0f0',
+  },
+  
+  imageMessage: {
+    width: Dimensions.get('window').width * 0.6,
+    height: Dimensions.get('window').width * 0.6,
+    borderRadius: 10,
   },
   timeText: {
     fontSize: 10,

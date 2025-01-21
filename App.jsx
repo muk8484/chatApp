@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import React, { useRef, useEffect } from 'react';
 import { TouchableOpacity, Text } from 'react-native';
-import { NavigationContainer, NavigationContainerRef, NavigationState } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginPage from './src/pages/LoginPage';
 import ChatPage from './src/pages/ChatPage';
@@ -31,14 +31,12 @@ function LogoutButton() {
   );
 }
 
-function App(){
+function App() {
   const isLogin = useAtomValue(isLoginAtom);
-  const navigationRef = useRef<any>(null); // NavigationContainerRef 사용 대신 any로 설정
-
+  const navigationRef = useRef(null);
 
   useEffect(() => {
     if (navigationRef.current && isLogin !== undefined) {
-      // 현재 화면과 다른 경우에만 navigate 호출
       const currentRouteName = navigationRef.current.getCurrentRoute()?.name;
       const targetRouteName = isLogin ? 'Chat' : 'Login';
 

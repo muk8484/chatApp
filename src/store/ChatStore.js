@@ -6,22 +6,28 @@ const messageListAtom = atom([]);
 const addMessageAtom = atom(
   null,
   (get, set, newMessage) => {
+    console.log('[ChatStore] addMessageAtom newMessage.type : ', newMessage.type);
     const currentMessages = get(messageListAtom);
-    console.log('[ChatStore] addMessageAtom currentMessages : ', currentMessages);
-    console.log('[ChatStore] addMessageAtom newMessage : ', typeof (newMessage.type));
-    // 중복 메시지 체크
-    // const isDuplicate = currentMessages.some(msg => (newMessage.user?.name !== 'system')&&(msg._id === newMessage._id));
-    // if(!isDuplicate) {
-    // }
-    if(newMessage.type === 'emoji'){
+    if(newMessage.type === 'image'){
+      // 이미지 메시지 처리
+      for(let i = currentMessages.length -1; i >= 0; i--) {
+        if(currentMessages[i].swapKey === newMessage.swapKey) {
+          console.log('[ChatStore] Image - Found loading message to replace');
+          // 해당 인덱스의 메시지만 교체
+          const updatedMessages = [
+            ...currentMessages.slice(0, i),      // 교체 위치 이전의 메시지들
+            newMessage,                          // 새 메시지
+            ...currentMessages.slice(i + 1)      // 교체 위치 이후의 메시지들
+          ];
+          set(messageListAtom, updatedMessages);
+          break;
+        }
+      }
+    }
+    else if(newMessage.type === 'emoji'){
+      console.log('[ChatStore] emoji - Found loading message to replace');
       for(let i = currentMessages.length -1; i >= 0 ; i--){
         if(currentMessages[i].swapKey === newMessage.swapKey){
-          // console.log('[ChatStore] addMessageAtom currentMessages[i]:', currentMessages);
-          // const updatedMessages = currentMessages.map(msg => 
-          //   msg.swapKey === newMessage.swapKey 
-          //     ? { ...msg, type: 'text', chat: newMessage.chat } 
-          //     : msg
-          // );
           const updatedMessages = [
             ...currentMessages.slice(0, i),
             { ...currentMessages[i], type: 'text', chat: newMessage.chat },
@@ -50,7 +56,7 @@ const emojiMessageListenerAtom = atom(
   null,
   (get, set) => {
     return EmojiMessageListenerService.getMessage((message) => {
-      console.log('[ChatStore] emojiMessageListenerAtom message received:', message);
+      console.log('[ChatStore] emojiMessageListenerAtom message received:');
       set(addMessageAtom, message);
     });
   }

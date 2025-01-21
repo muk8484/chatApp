@@ -19,6 +19,7 @@ import { messageListAtom, messageListenerAtom, sendMessageAtom, sendEmojiMessage
 function ChatPage() {
   const isDarkMode = useColorScheme() === 'dark';
   const [message, setMessage] = useState('');
+  const [messageCopy, setMessageCopy] = useState('');
   const messageList = useAtomValue(messageListAtom);
   const [, initMessageListener] = useAtom(messageListenerAtom);
   const [, initEmojiMessageListener] = useAtom(emojiMessageListenerAtom);
@@ -40,18 +41,19 @@ function ChatPage() {
   }, [initMessageListener, initEmojiMessageListener]);
 
   useEffect(() => {
-    // console.log('[ChatPage] messageList: ', messageList);
+    console.log('[ChatPage] messageList: ', messageList.length);
   }, [messageList]);
 
   const sendMessageAction = async () => {
     if (!message.trim()) return;
     const messageId = uuidv7();
+    const currentMessage = message;
+    setMessage('');
     try {
       console.log('[ChatPage] user : ', user);
       console.log('[ChatPage] messageId : ' + messageId);
-      await sendMessage(message, messageId);
-      await sendEmojiMessage(message, user, messageId);
-      setMessage('');
+      await sendMessage(currentMessage, messageId);
+      await sendEmojiMessage(currentMessage, user, messageId);
     } catch (error) {
       console.error('[ChatPage] sendMessage error:', error);
     }
