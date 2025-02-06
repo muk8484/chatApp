@@ -22,6 +22,8 @@
 - (NSURL *)bundleURL
 {
 #if DEBUG
+  // 메트로 서버 포트를 8082로 지정
+  [RCTBundleURLProvider sharedSettings].jsLocation = @"localhost:8082";
   return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
 #else
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];

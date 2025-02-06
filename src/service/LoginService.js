@@ -4,9 +4,8 @@ const loginService = {
   async login(email, authCode){
     return new Promise((resolve, reject) => {
       try {
-        console.log('[loginService] login email: ', email, authCode);
         if (!socket.connected) {
-            console.log('[loginService] disconnected');
+            console.log('[loginService] loginService connected to server');
             socket.connect();
         }
         socket.emit('login', email, authCode, (response) => {
@@ -27,10 +26,14 @@ const loginService = {
 };
 
 const logoutService = {
-    logout: async () => {
+    logout: async (user) => {
       return new Promise((resolve, reject) => {
         try {
-          socket.emit('logout', (response) => {
+          if (!socket.connected) {
+            console.log('[loginService] logoutService connected to server');
+            socket.emit('reconnect', user);
+          }
+          socket.emit('logout', user, (response) => {
             console.log('[logoutService] logout_response ');
             if (response?.ok) {
               resolve(response);

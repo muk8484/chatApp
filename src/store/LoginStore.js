@@ -39,8 +39,10 @@ const loginAtom = atom(
 const logoutAtom = atom(
     null,
     async (get, set) => {
+      const user = get(userAtom);
+      console.log('[loginStore] logoutAtom user : ', user);
       try {
-        const response = await logoutService.logout();
+        const response = await logoutService.logout(user);
         if (response.ok) {
           set(isLoginAtom, false);
           set(userAtom, null);

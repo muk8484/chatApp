@@ -48,5 +48,10 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>RCTDevMenu</key>
+	<dict>
+		<key>websocketProxyPort</key>
+		<integer>8082</integer>
+	</dict>
 </dict>
 </plist>
