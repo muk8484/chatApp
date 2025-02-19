@@ -76,3 +76,4 @@ yarn-error.log
 package-lock.json
 .bundle/
 .watchmanconfig
+ios/Podfile.lock
